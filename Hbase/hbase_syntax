@@ -1,0 +1,65 @@
+[training@localhost ~]$ hbase shell
+23/03/08 15:53:17 WARN conf.Configuration: hadoop.native.lib is deprecated. Instead, use io.native.lib.available
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 0.92.1-cdh4.1.1, rUnknown, Tue Oct 16 11:44:19 PDT 2012
+
+TABLE CREATION:
+hbase(main):001:0> create 'user1', {NAME => 'info', VERSIONS => 1}
+0 row(s) in 1.5760 seconds
+
+DESCRIPTION:
+hbase(main):003:0> describe 'user1'
+DESCRIPTION                                                                       ENABLED                                   
+ {NAME => 'user1', FAMILIES => [{NAME => 'info', BLOOMFILTER => 'NONE', REPLICATI true                                       
+ ON_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TT                                           
+ L => '2147483647', BLOCKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'tr                                           
+ ue'}]}                                                                                                                     
+1 row(s) in 0.0700 seconds
+
+ROW INSERTION:
+hbase(main):004:0> put 'user1', '01', 'info:name', 'ss'
+0 row(s) in 0.1290 seconds
+
+hbase(main):005:0> scan 'user1'
+ROW                              COLUMN+CELL                                                                                 
+ 01                              column=info:name, timestamp=1678309289137, value=ss                                         
+1 row(s) in 0.0240 seconds
+
+TABLE LISTS:
+hbase(main):006:0> list
+TABLE                                                                                                                       
+blogs                                                                                                                       
+hbaseUserRatings                                                                                                             
+mytable                                                                                                                     
+user                                                                                                                         
+user1                                                                                                                       
+5 row(s) in 0.0430 seconds
+
+HDFS DIRECTORY:
+[training@localhost ~]$ hadoop fs -ls /hbase
+Found 13 items
+drwxr-xr-x   - hbase supergroup          0 2023-01-22 11:53 /hbase/-ROOT-
+drwxr-xr-x   - hbase supergroup          0 2023-01-22 11:53 /hbase/.META.
+drwxr-xr-x   - hbase supergroup          0 2023-01-22 12:03 /hbase/.corrupt
+drwxr-xr-x   - hbase supergroup          0 2023-03-08 15:37 /hbase/.logs
+drwxr-xr-x   - hbase supergroup          0 2023-03-08 15:47 /hbase/.oldlogs
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 06:07 /hbase/blogs
+-rw-r--r--   1 hbase supergroup         38 2023-01-22 11:53 /hbase/hbase.id
+-rw-r--r--   1 hbase supergroup          3 2023-01-22 11:53 /hbase/hbase.version
+drwxr-xr-x   - hbase supergroup          0 2023-03-01 09:01 /hbase/hbaseUserRatings
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 06:23 /hbase/mytable
+drwxr-xr-x   - hbase supergroup          0 2023-03-08 15:37 /hbase/splitlog
+drwxr-xr-x   - hbase supergroup          0 2023-02-28 06:01 /hbase/user
+drwxr-xr-x   - hbase supergroup          0 2023-03-08 16:00 /hbase/user1
+[training@localhost ~]$ hadoop fs -ls /hbase/user1/*
+Found 1 items
+-rw-r--r--   1 hbase supergroup        515 2023-03-08 16:00 /hbase/user1/.tableinfo.0000000001
+Found 3 items
+drwxr-xr-x   - hbase supergroup          0 2023-03-08 16:00 /hbase/user1/78ae5b102e4bfc8e051fe6aee2464ffe/.oldlogs
+-rw-r--r--   1 hbase supergroup        222 2023-03-08 16:00 /hbase/user1/78ae5b102e4bfc8e051fe6aee2464ffe/.regioninfo
+drwxr-xr-x   - hbase supergroup          0 2023-03-08 16:00 /hbase/user1/78ae5b102e4bfc8e051fe6aee2464ffe/info
+[training@localhost ~]$ hadoop fs -cat /hbase/user1/.tableinfo.0000000001
+user1 IS_ROOTfalseIS_METAfalse info BLOOMFILTER NONE REPLICATION_SCOPE VERSIONS 1 COMPRESSION NONE MIN_VERSIONS 0 TT 2147483647  BLOCKSIZE65536 IN_MEMORYfalse
+BLOCKCACHE true
+{NAME => 'user1', FAMILIES => [{NAME => 'info', BLOOMFILTER => 'NONE', REPLICATION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', TTL => '2147483647', BLOCKSIZE => '65536', IN_MEMORY => 'false', BLOCKCACHE => 'true'}]}
